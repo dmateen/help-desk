@@ -1,3 +1,4 @@
+import { Hero } from "@/components/custom/hero/hero";
 import { Navbar } from "@/components/custom/navbar";
 import SignIn from "@/components/signin";
 import SignOut from "@/components/signout";
@@ -10,6 +11,7 @@ export default async function Home() {
   return (
     <>
       <Navbar />
+      <Hero />
     </>
   );
 }

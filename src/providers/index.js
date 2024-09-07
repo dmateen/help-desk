@@ -8,7 +8,7 @@ export function Providers({ children }) {
     <SessionProvider>
       <ThemeProvider
         attribute="class"
-        defaultTheme="dark
+        defaultTheme="dark"
         enableSystem
         disableTransitionOnChange
       >

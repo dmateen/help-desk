@@ -20,7 +20,7 @@ export default async function Home() {
   const session = await auth();
   const { data } = await NetworkService.get("/todos/1");
 
-  https: return (
+  return (
     <>
       <Navbar />
       <Hero />

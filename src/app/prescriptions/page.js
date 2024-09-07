@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MoreHorizontal, PlusCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -38,42 +38,37 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PrescriptionPreview from "@/components/custom/prescriptions/prescriptionPreview";
-
-// Sample data array
-const data = [
-  {
-    username: "234",
-    title: "Prescription A",
-    diagnosis: "Headache",
-    status: "critical",
-    medicines: [
-      {
-        name: "Medicine A",
-        milligram: 10,
-        quantity: 1,
-      },
-    ],
-    createdAt: "2024-02-12 02:00 PM",
-  },
-  {
-    username: "11",
-    title: "Prescription B",
-    diagnosis: "Back Pain",
-    status: "normal",
-    medicines: [
-      {
-        name: "Medicine B",
-        milligram: 5,
-        quantity: 2,
-      },
-    ],
-    createdAt: "2024-02-14 02:14 PM",
-  },
-];
+import { useAuth } from "@/contextProvider/authContextProvider";
+import { NetworkService } from "@/network";
+import { setDateFormat } from "@/Utils/common";
 
 export default function Page() {
+  const { getUser } = useAuth();
+  const [data, setData] = useState([]);
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedPrescription, setSelectedPrescription] = useState(null);
+
+  const { accessToken } = useAuth();
+  console.log("=== data", data, accessToken);
+
+  const getData = async () => {
+    const response = await NetworkService.get(
+      "/prescription/list",
+      {
+        /* query params go here if any */
+      },
+      { Authorization: "Bearer " + accessToken } // headerOptions
+    );
+    if (response) {
+      setData(response?.data);
+    }
+  };
+
+  useEffect(() => {
+    if (accessToken) getData();
+  }, [accessToken]);
+
+  console.log("=== prescriptioins", data);
 
   const handleView = (prescription) => {
     setSelectedPrescription(prescription);
@@ -138,14 +133,16 @@ export default function Page() {
                 <TabsTrigger value="all">All Prescriptions</TabsTrigger>
               </TabsList>
               <div className="ml-auto flex items-center gap-2">
-                <Link href="/addPrescription" passHref>
-                  <Button size="sm" className="h-7 gap-1">
-                    <PlusCircle className="h-3.5 w-3.5" />
-                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                      Add Prescription
-                    </span>
-                  </Button>
-                </Link>
+                {getUser().role != "PATIENT" && (
+                  <Link href="/addPrescription" passHref>
+                    <Button size="sm" className="h-7 gap-1">
+                      <PlusCircle className="h-3.5 w-3.5" />
+                      <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                        Add Prescription
+                      </span>
+                    </Button>
+                  </Link>
+                )}
               </div>
             </div>
             <TabsContent value="all">
@@ -174,7 +171,7 @@ export default function Page() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {data.map((item, index) => (
+                      {data?.map((item, index) => (
                         <TableRow key={index}>
                           <TableCell className="font-medium">
                             {item.title}
@@ -186,10 +183,10 @@ export default function Page() {
                                 : "Normal"}
                             </Badge>
                           </TableCell>
-                          <TableCell>{item.username}</TableCell>
-                          <TableCell>{item.medicines.length}</TableCell>
+                          <TableCell>{item.user?.first_name}</TableCell>
+                          <TableCell>{item.medicines.length || 0}</TableCell>
                           <TableCell className="hidden md:table-cell">
-                            {item.createdAt}
+                            {setDateFormat(item.updated_at)}
                           </TableCell>
                           <TableCell>
                             <DropdownMenu>
@@ -221,7 +218,7 @@ export default function Page() {
                 </CardContent>
                 <CardFooter>
                   <div className="text-xs text-muted-foreground">
-                    Showing <strong>{data.length}</strong> prescriptions
+                    Showing <strong>{data?.length}</strong> prescriptions
                   </div>
                 </CardFooter>
               </Card>

@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { NetworkService } from "@/network";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/contextProvider/authContextProvider";
 
 // Parent component that manages the form state and submission
 export default function Page() {
@@ -68,10 +69,15 @@ export default function Page() {
   });
 
   const router = useRouter();
+  const { accessToken } = useAuth();
 
   // Function to handle form submission
   const onSubmit = async (data) => {
-    const response = await NetworkService.post("/prescription/create/", data);
+    const response = await NetworkService.post(
+      "/prescription/create/",
+      data,
+      { Authorization: "Bearer " + accessToken } // headerOptions
+    );
 
     if (response.status === 200) {
       alert("Prescription created successfully");

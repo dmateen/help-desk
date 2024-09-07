@@ -5,6 +5,7 @@ const client = axios.create({
 });
 
 class NetworkService {
+  
   static async get(path = "", data, headerOptions, applyRetry = false) {
     let retryCount = applyRetry ? 0 : 2;
     while (retryCount < 3) {

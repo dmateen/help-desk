@@ -1,7 +1,8 @@
 import axios from "axios";
 
+
 const client = axios.create({
-  baseURL: "https://jsonplaceholder.typicode.com", // Replace with your API endpoint
+  baseURL: 'http://17.17.2.153:8001/', // Replace with your API endpoint
 });
 
 class NetworkService {

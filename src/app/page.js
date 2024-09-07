@@ -17,7 +17,6 @@ import { auth } from "@/lib/authentication/auth";
 import { NetworkService } from "@/network";
 
 export default async function Home() {
-  const session = await auth();
   const { data } = await NetworkService.get("/todos/1");
 
   return (

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const client = axios.create({
-  baseURL: "https://jsonplaceholder.typicode.com", // Replace with your API endpoint
+  baseURL: "http://17.17.2.153:8001/", // Replace with your API endpoint
 });
 
 class NetworkService {
@@ -23,7 +23,7 @@ class NetworkService {
             retryCount++;
             continue;
           } else {
-            return { ...response, error: getErrorString(response) };
+            return { ...response, error: response };
           }
         }
       } catch (e) {
@@ -32,7 +32,7 @@ class NetworkService {
           retryCount++;
           continue;
         } else {
-          return { ...e, error: getErrorString(e) };
+          return { ...e, error: e };
         }
       }
     }
@@ -48,7 +48,7 @@ class NetworkService {
       });
       return response;
     } catch (e) {
-      return { ...e, error: getErrorString(e) };
+      return { ...e, error: e };
     }
   }
 
@@ -62,7 +62,7 @@ class NetworkService {
       });
       return response;
     } catch (e) {
-      return { ...e, error: getErrorString(e) };
+      return { ...e, error: e };
     }
   }
 
@@ -76,7 +76,7 @@ class NetworkService {
       });
       return response;
     } catch (e) {
-      return { ...e, error: getErrorString(e) };
+      return { ...e, error: e };
     }
   }
 
@@ -90,7 +90,7 @@ class NetworkService {
       });
       return response;
     } catch (e) {
-      return { ...e, error: getErrorString(e) };
+      return { ...e, error: e };
     }
   }
 }
